@@ -1,5 +1,5 @@
 pkgname=jacartauc
-pkgver=3.1.1.3473
+pkgver=3.1.2.3478
 pkgrel=1
 pkgdesc="JaCarta Unified Client"
 arch=("x86_64")
@@ -30,19 +30,19 @@ depends=(
   zlib
 )
 
-source=("https://www.aladdin-rd.ru/upload/downloads/JaCarta_UC/jacarta-3.1/lunix/distributions/jacartauc_3.1.1.3473_rpm_x64.zip")
-sha256sums=("d845f773aeac42497a6964cc637c0ff045d138c184d5bd15468c49cf900b507e")
-options=(!strip)
+source=("https://www.aladdin-rd.ru/upload/downloads/JaCarta_UC/jacarta-3.1/lunix/distributions/jacartauc_${pkgver}_rpm_x64.zip")
+sha256sums=("06c1995c44702a46851a842d7c96f3b4a06fb5c12166b0100a7adef6614042fb")
+options=(!strip !debug)
 
 install="jacartauc.install"
 
 package() {
   
-  bsdtar -xvf "$srcdir/jcsecurbio_1.1.2.180_x64.rpm" -C "$pkgdir"
-  bsdtar -xvf "$srcdir/jcpkcs11-2_2.9.0.866_x64.rpm" -C "$pkgdir"
-  bsdtar -xvf "$srcdir/jacartauc_3.1.1.3473_x64.rpm" -C "$pkgdir"
+  bsdtar -xvf "$srcdir"/jcsecurbio_*_x64.rpm -C "$pkgdir"
+  bsdtar -xvf "$srcdir"/jcpkcs11-2_*_x64.rpm -C "$pkgdir"
+  bsdtar -xvf "$srcdir"/jacartauc_*_x64.rpm -C "$pkgdir"
   
-  chmod 1777 "$pkgdir/tmp" # fix permissions
+  mv "$pkgdir/tmp" "$pkgdir/opt/jacartauc/scripts" # keep installation scripts
   mv "$pkgdir/usr/lib64" "$pkgdir/usr/lib" # arch just symlinks /usr/lib64 to /usr/lib
   gunzip "$pkgdir/opt/jacartauc/bin/JaCartaUC.gz" # unpack binary
 
