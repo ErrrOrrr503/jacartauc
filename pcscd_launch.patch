@@ -1,0 +1,33 @@
+--- jacartauc.sh.bak	2025-11-06 19:43:18.306627977 +0300
++++ jacartauc.sh	2025-11-06 20:09:06.043646316 +0300
+@@ -17,9 +17,30 @@
+ unset QTDIR QT_FONT_DPI QT_IM_MODULE QT_QPA_PLATFORMTHEME QT_SCALE_FACTOR QT_STYLE_OVERRIDE
+ export QT_QPA_PLATFORM=xcb
+ 
++PCSCD_WAS_LAUNCHED=0
++if [[ ! $(ps -aux | grep pcscd | wc -l) -eq 2 ]]; then
++    # pcscd not running
++    if [[ $UID -eq 0 ]]; then
++        systemctl start pcscd.socket
++        PCSCD_WAS_LAUNCHED=1
++    else
++        err="Демон pcscd не запущен и не может быть запущен т.к. вы не root. Запустите демон либо перезапустите от root-а."
++        echo "$err"
++        if [[ ! -z "$(command -v zenity)" ]]; then
++            zenity --error --text="$err" --title "Ошибка pcscd"
++        elif [[ ! -z "$(command -v kdialog)" ]]; then
++            kdialog --title "Ошибка pcscd" --error "$err"
++        fi
++        exit 1
++    fi
++fi
++
+ if [ -n "${ARGS}" ]; then
+     $DIRECTORY/JaCartaUC "${ARGS}"
+ else
+     $DIRECTORY/JaCartaUC
+ fi
+ 
++if [[ $PCSCD_WAS_LAUNCHED -eq 1 ]]; then
++    systemctl stop pcscd.socket
++fi
