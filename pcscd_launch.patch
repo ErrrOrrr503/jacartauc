@@ -5,7 +5,7 @@
  export QT_QPA_PLATFORM=xcb
  
 +PCSCD_WAS_LAUNCHED=0
-+if [[ ! $(ps -aux | grep pcscd | wc -l) -eq 2 ]]; then
++if [[ $(ps -aux | grep pcscd | wc -l) -lt 2 ]]; then
 +    # pcscd not running
 +    if [[ $UID -eq 0 ]]; then
 +        systemctl start pcscd.socket
